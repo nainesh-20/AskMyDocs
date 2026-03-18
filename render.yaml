@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: askmydocs-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && PYTHONPATH=. alembic upgrade head
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: SUPABASE_STORAGE_BUCKET
+        value: private_rag
+      - key: DATABASE_URL
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: QDRANT_COLLECTION_NAME
+        value: rag_documents
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.1-8b-instant
+      - key: CONFIDENCE_THRESHOLD
+        value: "0.75"
+      - key: NO_MATCH_THRESHOLD
+        value: "0.45"
+      - key: MAX_DOCUMENTS_PER_USER
+        value: "3"
+      - key: ENVIRONMENT
+        value: production
+      - key: ALLOWED_ORIGINS
+        sync: false
