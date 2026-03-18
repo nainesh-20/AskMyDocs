@@ -2,7 +2,6 @@ import logging
 import uuid
 
 import fitz  # PyMuPDF
-from fastembed import TextEmbedding
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from qdrant_client.http.models import PointStruct
 from sqlalchemy import update
@@ -12,10 +11,9 @@ from app.config import settings
 from app.db.models import Document
 from app.db.postgres import async_session
 from app.db.qdrant import qdrant_client
+from app.services.embeddings import get_embedding_model
 
 logger = logging.getLogger(__name__)
-
-embedding_model = TextEmbedding("BAAI/bge-small-en-v1.5")
 
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=512,
@@ -56,7 +54,7 @@ def chunk_text(pages: list[dict]) -> list[dict]:
 def embed_chunks(chunks: list[dict]) -> list[list[float]]:
     """Batch-embed all chunk texts using FastEmbed."""
     texts = [c["text"] for c in chunks]
-    embeddings = list(embedding_model.embed(texts))
+    embeddings = list(get_embedding_model().embed(texts))
     return [e.tolist() for e in embeddings]
 
 

@@ -1,19 +1,17 @@
 import logging
 
-from fastembed import TextEmbedding
 from qdrant_client.http.models import FieldCondition, Filter, MatchValue
 
 from app.config import settings
 from app.db.qdrant import qdrant_client
+from app.services.embeddings import get_embedding_model
 
 logger = logging.getLogger(__name__)
-
-embedding_model = TextEmbedding("BAAI/bge-small-en-v1.5")
 
 
 def embed_query(query: str) -> list[float]:
     """Embed a single query string using the same model as ingestion."""
-    embeddings = list(embedding_model.embed([query]))
+    embeddings = list(get_embedding_model().embed([query]))
     return embeddings[0].tolist()
 
 
